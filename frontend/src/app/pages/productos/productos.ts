@@ -1,27 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ProductoService } from '../../services/producto';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-productos',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './productos.html',
-  styleUrl: './productos.css'
+  styleUrls: ['./productos.css']
 })
-export class Productos {
+export class Productos implements OnInit {
 
-  productos = [
-    {
-      id: 1,
-      nombre: 'Notebook Gamer',
-      precio: 850000
-    },
-    {
-      id: 2,
-      nombre: 'Mouse Logitech',
-      precio: 25000
-    }
-  ];
+  productos:any[] = [];
+
+  constructor(
+  private productoService: ProductoService,
+  private cdr: ChangeDetectorRef
+){}
+
+  ngOnInit(){
+
+  this.productoService.obtenerProductos()
+  .subscribe((data:any)=>{
+
+    console.log(data);
+
+    this.productos = data;
+
+    this.cdr.detectChanges();
+  });
+}
 
   agregarCarrito(producto:any){
 
@@ -32,6 +41,5 @@ export class Productos {
     localStorage.setItem('carrito', JSON.stringify(carrito));
 
     alert('Producto agregado');
-    localStorage.setItem('carrito', '');
   }
 }
