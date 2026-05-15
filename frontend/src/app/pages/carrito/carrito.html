@@ -1,0 +1,11 @@
+<h2>Carrito</h2>
+
+<div class="card p-3 mb-2" *ngFor="let item of carrito">
+    <h5>{{ item.nombre }}</h5>
+
+    <p>${{ item.precio }}</p>
+</div>
+
+<h3>Total: ${{ total }}</h3>
+
+<a routerLink="/pago" class="btn btn-success"> Ir a pagar </a>
