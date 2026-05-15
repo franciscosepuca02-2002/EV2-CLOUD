@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app-pagos:
+    build:
+      context: ./app-pagos
+      dockerfile: Dockerfile
+    container_name: app-pagos
+    environment:
+      MP_ACCESS_TOKEN: ${MP_ACCESS_TOKEN}
+      MP_PUBLIC_KEY: ${MP_PUBLIC_KEY}
+      MP_WEBHOOK_URL: ${MP_WEBHOOK_URL}
+      MP_SUCCESS_URL: ${MP_SUCCESS_URL}
+      MP_FAILURE_URL: ${MP_FAILURE_URL}
+      MP_PENDING_URL: ${MP_PENDING_URL}
+    ports:
+      - "8002:8002"
+    restart: unless-stopped
