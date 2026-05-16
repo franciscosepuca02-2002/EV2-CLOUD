@@ -1,0 +1,97 @@
+/* NAVBAR */
+
+.navbar-custom {
+    width: 100%;
+    padding: 16px 40px;
+
+    background: linear-gradient(
+        135deg,
+        #193282,
+        #2747b5
+    );
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* LOGO */
+
+.navbar-brand-custom {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+
+/* BOTONES */
+
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-btn {
+    padding: 10px 20px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+
+    transition: all 0.3s ease;
+}
+
+/* BOTÓN PRODUCTOS */
+
+.secondary-btn {
+    background-color: white;
+    color: #193282;
+}
+
+.secondary-btn:hover {
+    background-color: #e9eefc;
+    transform: translateY(-2px);
+}
+
+/* BOTÓN CARRITO */
+
+.primary-btn {
+    background-color: #4f6dd6;
+    color: white;
+}
+
+.primary-btn:hover {
+    background-color: #6f89e8;
+    transform: translateY(-2px);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+    .navbar-custom {
+        padding: 15px 20px;
+    }
+
+    .navbar-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .nav-buttons {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .nav-btn {
+        text-align: center;
+    }
+}

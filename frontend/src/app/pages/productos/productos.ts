@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductoService } from '../../services/producto';
 import { ChangeDetectorRef } from '@angular/core';
+import { Navbar } from '../../components/navbar/navbar';
 
 @Component({
   selector: 'app-productos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Navbar],
   templateUrl: './productos.html',
   styleUrls: ['./productos.css']
 })

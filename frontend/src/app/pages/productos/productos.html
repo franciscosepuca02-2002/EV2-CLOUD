@@ -1,12 +1,35 @@
-<div class="row">
-    <div class="col-md-4 mb-3" *ngFor="let producto of productos">
-        <div class="card p-3">
+<app-navbar></app-navbar>
 
-        <h4>{{ producto.nombre }}</h4>
+<div class="productos-container">
 
-        <p>${{ producto.precio }}</p>
-
-        <button class="btn btn-primary" (click)="agregarCarrito(producto)">Agregar al Carrito</button>
-        </div>
+    <div class="productos-header">
+        <h1>Nuestros Productos</h1>
+        <p>Explora y agrega productos a tu carrito</p>
     </div>
+
+    <div class="productos-grid">
+
+        <div class="producto-card" *ngFor="let producto of productos">
+
+            <div class="producto-info">
+
+                <h3>{{ producto.nombre }}</h3>
+
+                <p class="precio">
+                    ${{ producto.precio }}
+                </p>
+
+            </div>
+
+            <button
+                class="btn-agregar"
+                (click)="agregarCarrito(producto)"
+            >
+                Agregar al Carrito
+            </button>
+
+        </div>
+
+    </div>
+
 </div>

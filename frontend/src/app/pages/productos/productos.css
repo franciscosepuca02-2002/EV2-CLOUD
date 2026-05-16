@@ -1,0 +1,135 @@
+/* CONTENEDOR GENERAL */
+
+.productos-container {
+    width: 100%;
+    min-height: 100vh;
+
+    padding: 40px;
+
+    background: #f4f7ff;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* HEADER */
+
+.productos-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.productos-header h1 {
+    color: #193282;
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.productos-header p {
+    color: #666;
+    font-size: 16px;
+}
+
+/* GRID */
+
+.productos-grid {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+
+    gap: 25px;
+}
+
+/* CARD */
+
+.producto-card {
+    background-color: white;
+
+    border-radius: 18px;
+
+    padding: 25px;
+
+    box-shadow: 0 8px 20px rgba(25, 50, 130, 0.12);
+
+    transition: all 0.3s ease;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.producto-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow: 0 12px 25px rgba(25, 50, 130, 0.2);
+}
+
+/* INFO */
+
+.producto-info h3 {
+    color: #193282;
+    font-size: 24px;
+
+    margin-bottom: 15px;
+}
+
+.precio {
+    color: #4f6dd6;
+
+    font-size: 28px;
+    font-weight: bold;
+
+    margin-bottom: 25px;
+}
+
+/* BOTÓN */
+
+.btn-agregar {
+    width: 100%;
+
+    border: none;
+    border-radius: 12px;
+
+    padding: 14px;
+
+    background: linear-gradient(
+        135deg,
+        #193282,
+        #2747b5
+    );
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+}
+
+.btn-agregar:hover {
+    transform: translateY(-2px);
+
+    background: linear-gradient(
+        135deg,
+        #2747b5,
+        #4f6dd6
+    );
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+    .productos-container {
+        padding: 20px;
+    }
+
+    .productos-header h1 {
+        font-size: 32px;
+    }
+
+    .precio {
+        font-size: 24px;
+    }
+}

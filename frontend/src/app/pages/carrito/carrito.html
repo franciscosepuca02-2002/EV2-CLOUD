@@ -1,11 +1,44 @@
-<h2>Carrito</h2>
+<app-navbar></app-navbar>
 
-<div class="card p-3 mb-2" *ngFor="let item of carrito">
-    <h5>{{ item.nombre }}</h5>
+<div class="carrito-container">
 
-    <p>${{ item.precio }}</p>
+    <div class="carrito-header">
+        <h1>Tu Carrito</h1>
+        <p>Revisa tus productos antes de continuar</p>
+    </div>
+
+    <div class="carrito-lista">
+
+        <div class="carrito-card" *ngFor="let item of carrito">
+
+            <div class="producto-detalle">
+
+                <h3>{{ item.nombre }}</h3>
+
+                <p class="precio-producto">
+                    ${{ item.precio }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="carrito-resumen">
+
+        <div class="total-box">
+            <span>Total</span>
+            <h2>${{ total }}</h2>
+        </div>
+
+        <a
+            routerLink="/pago"
+            class="btn-pagar"
+        >
+            Ir a pagar
+        </a>
+
+    </div>
+
 </div>
-
-<h3>Total: ${{ total }}</h3>
-
-<a routerLink="/pago" class="btn btn-success"> Ir a pagar </a>
