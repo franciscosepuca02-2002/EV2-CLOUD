@@ -1,3 +1,8 @@
+# INTEGRANTES
+- Carlos Cabello
+- Benjamín Oviedo
+- Francisco Sepúlveda
+
 # EV2 Cloud — Tienda con microservicios
 
 Sistema de venta online con arquitectura de microservicios desplegado en AWS ECS Fargate.
