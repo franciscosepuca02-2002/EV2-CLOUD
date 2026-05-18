@@ -23,7 +23,8 @@ COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 
 # Script para reemplazar API_URL en config.json al arrancar (runtime config)
 COPY entrypoint.sh /docker-entrypoint.d/40-config.sh
-RUN chmod +x /docker-entrypoint.d/40-config.sh
+RUN sed -i 's/\r$//' /docker-entrypoint.d/40-config.sh \
+    && chmod +x /docker-entrypoint.d/40-config.sh
 
 EXPOSE 80
 

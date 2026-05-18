@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Muestra las IPs públicas de cada service ECS
+export MSYS_NO_PATHCONV=1
+export MSYS2_ARG_CONV_EXCL="*"
 set -e
 source aws-env.sh
 

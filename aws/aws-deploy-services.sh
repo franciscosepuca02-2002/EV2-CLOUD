@@ -2,9 +2,10 @@
 # ============================================================================
 # aws-deploy-services.sh
 # Registra task definitions y crea/actualiza services ECS Fargate.
-# Backend y app-pagos usan Service Discovery (Cloud Map) para DNS interno.
-# Frontend recibe la IP pública del backend al desplegarse.
 # ============================================================================
+
+export MSYS_NO_PATHCONV=1
+export MSYS2_ARG_CONV_EXCL="*"
 
 set -e
 
@@ -14,7 +15,6 @@ if [ ! -f "aws-env.sh" ]; then
 fi
 source aws-env.sh
 
-# Cargar credenciales MP desde .env
 if [ -f "../.env" ]; then
   set -a; source ../.env; set +a
 elif [ -f ".env" ]; then
@@ -51,7 +51,7 @@ service_exists() {
 
 create_or_update_service() {
   local svc=$1
-  local sd_arn=$2  # opcional
+  local sd_arn=$2
   local task_family="${PROJECT_NAME}-${svc}"
   local full_name="${PROJECT_NAME}-${svc}-svc"
 
@@ -82,11 +82,15 @@ create_or_update_service() {
 create_or_update_service "app-pagos" "$SD_APP_PAGOS_ARN"
 create_or_update_service "backend"   "$SD_BACKEND_ARN"
 
-echo "==> Esperando 45s a que backend levante..."
-sleep 45
+echo "==> Esperando a que backend quede estable..."
+aws ecs wait services-stable \
+  --cluster "$CLUSTER_NAME" \
+  --services "${PROJECT_NAME}-backend-svc" \
+  --region "$AWS_REGION"
 
 BACKEND_TASK_ARN=$(aws ecs list-tasks \
   --cluster "$CLUSTER_NAME" --service-name "${PROJECT_NAME}-backend-svc" \
+  --desired-status RUNNING \
   --region "$AWS_REGION" --query 'taskArns[0]' --output text)
 
 BACKEND_PUBLIC_IP=""
@@ -111,7 +115,7 @@ if [ -n "$BACKEND_PUBLIC_IP" ] && [ "$BACKEND_PUBLIC_IP" != "None" ]; then
     --cli-input-json "file://.rendered/task-frontend.json" \
     --region "$AWS_REGION" >/dev/null
 else
-  echo "WARN: No se pudo obtener IP del backend (talvez aún no levanta). Frontend usa placeholder."
+  echo "WARN: No se pudo obtener IP del backend. Frontend usa placeholder."
 fi
 
 create_or_update_service "frontend" ""
@@ -124,6 +128,6 @@ echo "  Cluster:        $CLUSTER_NAME"
 echo "  Backend IP:     ${BACKEND_PUBLIC_IP:-aún no asignada}"
 echo "  API_URL:        $API_URL"
 echo ""
-echo "  Para ver IPs y estado:  ./aws-show-ips.sh"
+echo "  Para ver IPs:   ./aws-show-ips.sh"
 echo "  Consola: https://${AWS_REGION}.console.aws.amazon.com/ecs/v2/clusters/${CLUSTER_NAME}/services?region=${AWS_REGION}"
 echo "============================================================"

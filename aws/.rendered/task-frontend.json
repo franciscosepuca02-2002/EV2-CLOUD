@@ -1,0 +1,30 @@
+{
+  "family": "ev2-cloud-frontend",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::848125594132:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "frontend",
+      "image": "848125594132.dkr.ecr.us-east-2.amazonaws.com/ev2-cloud-frontend:latest",
+      "essential": true,
+      "environment": [
+        { "name": "API_URL", "value": "http://3.145.134.228:8000" }
+      ],
+      "portMappings": [
+        { "containerPort": 80, "protocol": "tcp" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ev2-cloud",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "frontend",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

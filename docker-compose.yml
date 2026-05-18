@@ -27,8 +27,10 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - mysql
-      - app-pagos
+      mysql:
+        condition: service_healthy
+      app-pagos:
+        condition: service_started
 
   mysql:
     image: mysql:8.0
@@ -41,6 +43,12 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -proot --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
 
   app-pagos:
     build:

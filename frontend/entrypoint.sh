@@ -3,8 +3,11 @@
 # para que el mismo build sirva en local, AWS, etc.
 
 API_URL="${API_URL:-http://localhost:8000}"
+CONFIG_DIR="/usr/share/nginx/html/assets"
 
-cat > /usr/share/nginx/html/assets/config.json <<EOF
+mkdir -p "$CONFIG_DIR"
+
+cat > "$CONFIG_DIR/config.json" <<EOF
 {
   "apiUrl": "${API_URL}"
 }

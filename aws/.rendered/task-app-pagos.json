@@ -1,0 +1,35 @@
+{
+  "family": "ev2-cloud-app-pagos",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::848125594132:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "app-pagos",
+      "image": "848125594132.dkr.ecr.us-east-2.amazonaws.com/ev2-cloud-app-pagos:latest",
+      "essential": true,
+      "environment": [
+        { "name": "MP_ACCESS_TOKEN", "value": "APP_USR-5205343056806904-051621-8937b5f9e386b4df52b7d7e42a22c2ef-3406335927" },
+        { "name": "MP_PUBLIC_KEY", "value": "APP_USR-c0b82a1d-6e7d-4e14-b4c5-69a8e7e9c062" },
+        { "name": "MP_SUCCESS_URL", "value": "https://www.mercadopago.cl/success" },
+        { "name": "MP_FAILURE_URL", "value": "https://www.mercadopago.cl/failure" },
+        { "name": "MP_PENDING_URL", "value": "https://www.mercadopago.cl/pending" },
+        { "name": "MP_WEBHOOK_URL", "value": "" }
+      ],
+      "portMappings": [
+        { "containerPort": 8002, "protocol": "tcp" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ev2-cloud",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "app-pagos",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

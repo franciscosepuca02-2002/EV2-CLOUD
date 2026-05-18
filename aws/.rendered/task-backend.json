@@ -1,10 +1,10 @@
 {
-  "family": "${PROJECT_NAME}-backend",
+  "family": "ev2-cloud-backend",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "512",
   "memory": "1024",
-  "executionRoleArn": "${EXEC_ROLE_ARN}",
+  "executionRoleArn": "arn:aws:iam::848125594132:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
       "name": "mysql",
@@ -27,8 +27,8 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "${LOG_GROUP}",
-          "awslogs-region": "${AWS_REGION}",
+          "awslogs-group": "/ecs/ev2-cloud",
+          "awslogs-region": "us-east-2",
           "awslogs-stream-prefix": "mysql",
           "awslogs-create-group": "true"
         }
@@ -36,7 +36,7 @@
     },
     {
       "name": "backend",
-      "image": "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${PROJECT_NAME}-backend:latest",
+      "image": "848125594132.dkr.ecr.us-east-2.amazonaws.com/ev2-cloud-backend:latest",
       "essential": true,
       "dependsOn": [
         { "containerName": "mysql", "condition": "HEALTHY" }
@@ -47,7 +47,7 @@
         { "name": "DB_HOST", "value": "127.0.0.1" },
         { "name": "DB_PORT", "value": "3306" },
         { "name": "DB_NAME", "value": "tienda_cloud" },
-        { "name": "APP_PAGOS_URL", "value": "${APP_PAGOS_URL}" }
+        { "name": "APP_PAGOS_URL", "value": "http://app-pagos.ev2-cloud.local:8002" }
       ],
       "portMappings": [
         { "containerPort": 8000, "protocol": "tcp" }
@@ -55,8 +55,8 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "${LOG_GROUP}",
-          "awslogs-region": "${AWS_REGION}",
+          "awslogs-group": "/ecs/ev2-cloud",
+          "awslogs-region": "us-east-2",
           "awslogs-stream-prefix": "backend",
           "awslogs-create-group": "true"
         }

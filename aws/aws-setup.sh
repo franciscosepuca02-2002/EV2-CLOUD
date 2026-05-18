@@ -1,24 +1,13 @@
 #!/usr/bin/env bash
 # ============================================================================
 # aws-setup.sh
-# Crea toda la infraestructura AWS necesaria para el despliegue:
-#   - 3 repositorios ECR (frontend, backend, app-pagos)
-#   - 1 cluster ECS Fargate
-#   - 1 log group de CloudWatch
-#   - IAM roles (ecsTaskExecutionRole)
-#   - Security group permisivo (puertos 80, 8000, 8002, 3306)
-#   - Task definitions registradas
-#   - Services ECS Fargate corriendo
-#
-# REQUISITOS:
-#   - aws cli v2 instalado y configurado (aws configure)
-#   - Permisos: ECR, ECS, IAM, EC2, Logs
-#   - jq instalado (sudo apt install jq)
-#
-# USO:
-#   chmod +x aws-setup.sh
-#   ./aws-setup.sh
+# Crea infraestructura AWS base: ECR, ECS cluster, log group, IAM role,
+# security group, namespace de Cloud Map (Service Discovery).
 # ============================================================================
+
+# Evita que Git Bash en Windows convierta paths tipo /ecs/... a C:/Program Files/Git/ecs/...
+export MSYS_NO_PATHCONV=1
+export MSYS2_ARG_CONV_EXCL="*"
 
 set -e
 
@@ -90,7 +79,6 @@ if [ "$SG_ID" == "None" ] || [ -z "$SG_ID" ]; then
     --region "$AWS_REGION" \
     --query 'GroupId' --output text)
 
-  # Reglas: 80 (frontend), 8000 (backend), 8002 (app-pagos), 3306 (mysql interno)
   for port in 80 8000 8002 3306; do
     aws ec2 authorize-security-group-ingress \
       --group-id "$SG_ID" \
@@ -129,7 +117,6 @@ if [ -z "$NAMESPACE_ID" ] || [ "$NAMESPACE_ID" == "None" ]; then
 fi
 echo "==> Namespace ID: $NAMESPACE_ID"
 
-# Crear service discovery services para backend y app-pagos
 for svc in backend app-pagos; do
   SD_NAME="${svc}"
   SD_ID=$(aws servicediscovery list-services \
@@ -157,8 +144,10 @@ SD_APP_PAGOS_ARN=$(aws servicediscovery list-services \
   --filters "Name=NAMESPACE_ID,Values=$NAMESPACE_ID,Condition=EQ" \
   --query "Services[?Name=='app-pagos'].Arn" --output text)
 
-# -------- 6. EXPORTAR PARA TASK DEFINITIONS --------
+# -------- 7. EXPORTAR --------
 cat > aws-env.sh <<EOF
+export MSYS_NO_PATHCONV=1
+export MSYS2_ARG_CONV_EXCL="*"
 export AWS_REGION="$AWS_REGION"
 export ACCOUNT_ID="$ACCOUNT_ID"
 export CLUSTER_NAME="$CLUSTER_NAME"
@@ -185,5 +174,4 @@ echo "  Exec Role:    $EXEC_ROLE_ARN"
 echo "  ECR repos:    ${PROJECT_NAME}-frontend, ${PROJECT_NAME}-backend, ${PROJECT_NAME}-app-pagos"
 echo ""
 echo "  Variables exportadas en: aws-env.sh"
-echo "  Próximo paso: ./aws-deploy-services.sh"
 echo "============================================================"
