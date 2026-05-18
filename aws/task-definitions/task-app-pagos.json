@@ -1,0 +1,35 @@
+{
+  "family": "${PROJECT_NAME}-app-pagos",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "${EXEC_ROLE_ARN}",
+  "containerDefinitions": [
+    {
+      "name": "app-pagos",
+      "image": "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${PROJECT_NAME}-app-pagos:latest",
+      "essential": true,
+      "environment": [
+        { "name": "MP_ACCESS_TOKEN", "value": "${MP_ACCESS_TOKEN}" },
+        { "name": "MP_PUBLIC_KEY", "value": "${MP_PUBLIC_KEY}" },
+        { "name": "MP_SUCCESS_URL", "value": "${MP_SUCCESS_URL}" },
+        { "name": "MP_FAILURE_URL", "value": "${MP_FAILURE_URL}" },
+        { "name": "MP_PENDING_URL", "value": "${MP_PENDING_URL}" },
+        { "name": "MP_WEBHOOK_URL", "value": "${MP_WEBHOOK_URL}" }
+      ],
+      "portMappings": [
+        { "containerPort": 8002, "protocol": "tcp" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "${LOG_GROUP}",
+          "awslogs-region": "${AWS_REGION}",
+          "awslogs-stream-prefix": "app-pagos",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductoService } from '../../services/producto';
-import { ChangeDetectorRef } from '@angular/core';
+import { Carrito } from '../../services/carrito';
 import { Navbar } from '../../components/navbar/navbar';
 
 @Component({
@@ -12,35 +12,35 @@ import { Navbar } from '../../components/navbar/navbar';
   styleUrls: ['./productos.css']
 })
 export class Productos implements OnInit {
+  private productoService = inject(ProductoService);
+  private carritoSvc = inject(Carrito);
+  private cdr = inject(ChangeDetectorRef);
 
-  productos:any[] = [];
+  productos: any[] = [];
+  cargando = true;
+  error = '';
 
-  constructor(
-  private productoService: ProductoService,
-  private cdr: ChangeDetectorRef
-){}
+  ngOnInit() {
+    this.productoService.obtenerProductos().subscribe({
+      next: (data: any) => {
+        this.productos = data;
+        this.cargando = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.cargando = false;
+        this.error = 'No se pudieron cargar los productos';
+        console.error(err);
+      }
+    });
+  }
 
-  ngOnInit(){
-
-  this.productoService.obtenerProductos()
-  .subscribe((data:any)=>{
-
-    console.log(data);
-
-    this.productos = data;
-
-    this.cdr.detectChanges();
-  });
-}
-
-  agregarCarrito(producto:any){
-
-    let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
-
-    carrito.push(producto);
-
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-
-    alert('Producto agregado');
+  agregarCarrito(producto: any) {
+    this.carritoSvc.agregar({
+      id: producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio
+    });
+    alert('Producto agregado al carrito');
   }
 }

@@ -1,0 +1,81 @@
+name: Build & Deploy to AWS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-2
+  PROJECT_NAME: ev2-cloud
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # ---------------- BUILD & PUSH ----------------
+      - name: Build & push backend
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE: ${{ env.PROJECT_NAME }}-backend
+        run: |
+          docker build -t $REGISTRY/$IMAGE:latest -t $REGISTRY/$IMAGE:${{ github.sha }} ./backend
+          docker push $REGISTRY/$IMAGE:latest
+          docker push $REGISTRY/$IMAGE:${{ github.sha }}
+
+      - name: Build & push app-pagos
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE: ${{ env.PROJECT_NAME }}-app-pagos
+        run: |
+          docker build -t $REGISTRY/$IMAGE:latest -t $REGISTRY/$IMAGE:${{ github.sha }} ./app-pagos
+          docker push $REGISTRY/$IMAGE:latest
+          docker push $REGISTRY/$IMAGE:${{ github.sha }}
+
+      - name: Build & push frontend
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE: ${{ env.PROJECT_NAME }}-frontend
+        run: |
+          docker build -t $REGISTRY/$IMAGE:latest -t $REGISTRY/$IMAGE:${{ github.sha }} ./frontend
+          docker push $REGISTRY/$IMAGE:latest
+          docker push $REGISTRY/$IMAGE:${{ github.sha }}
+
+      # ---------------- DEPLOY ----------------
+      - name: Force ECS redeploy
+        run: |
+          for svc in app-pagos backend frontend; do
+            FULL="${PROJECT_NAME}-${svc}-svc"
+            echo "Forzando nuevo deployment en $FULL"
+            aws ecs update-service \
+              --cluster ${PROJECT_NAME}-cluster \
+              --service "$FULL" \
+              --force-new-deployment \
+              --region ${{ env.AWS_REGION }} \
+              --query 'service.serviceName' --output text || echo "$FULL aún no existe"
+          done
+
+      - name: Summary
+        run: |
+          echo "### Deploy ejecutado :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend image: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Region: ${{ env.AWS_REGION }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Para ver IPs: corre \`./aws/aws-show-ips.sh\` localmente" >> $GITHUB_STEP_SUMMARY

@@ -1,18 +1,25 @@
 <nav class="navbar-custom">
     <div class="container-fluid navbar-content">
 
-        <a class="navbar-brand-custom">
+        <a routerLink="/productos" class="navbar-brand-custom">
             Tienda Cloud
         </a>
 
         <div class="nav-buttons">
-            <a routerLink="/productos" class="nav-btn secondary-btn">
-                Productos
+            <a routerLink="/productos" class="nav-btn secondary-btn">Productos</a>
+            <a routerLink="/carrito" class="nav-btn primary-btn">
+                Carrito <span class="badge" *ngIf="cantidadCarrito > 0">{{ cantidadCarrito }}</span>
             </a>
 
-            <a routerLink="/carrito" class="nav-btn primary-btn">
-                Carrito
-            </a>
+            <ng-container *ngIf="usuario; else noAuth">
+                <span class="user-name">Hola, {{ usuario.nombre }}</span>
+                <button class="nav-btn secondary-btn" (click)="cerrarSesion()">Salir</button>
+            </ng-container>
+
+            <ng-template #noAuth>
+                <a routerLink="/login" class="nav-btn secondary-btn">Login</a>
+                <a routerLink="/register" class="nav-btn primary-btn">Registro</a>
+            </ng-template>
         </div>
 
     </div>

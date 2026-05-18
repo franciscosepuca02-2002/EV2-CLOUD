@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
+import { Carrito as CarritoSvc, ItemCarrito } from '../../services/carrito';
 
 @Component({
   selector: 'app-carrito',
@@ -10,24 +11,28 @@ import { Navbar } from '../../components/navbar/navbar';
   templateUrl: './carrito.html',
   styleUrl: './carrito.css'
 })
-export class Carrito {
+export class Carrito implements OnInit {
+  private carritoSvc = inject(CarritoSvc);
 
-  carrito:any[] = [];
-
+  items: ItemCarrito[] = [];
   total = 0;
 
-  ngOnInit(){
-
-    this.carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
-
-    this.calcularTotal();
+  ngOnInit() {
+    this.refrescar();
   }
 
-  calcularTotal(){
+  refrescar() {
+    this.items = this.carritoSvc.obtener();
+    this.total = this.carritoSvc.total();
+  }
 
-    this.total = this.carrito.reduce(
-      (acc, item) => acc + item.precio,
-      0
-    );
+  eliminar(index: number) {
+    this.carritoSvc.eliminar(index);
+    this.refrescar();
+  }
+
+  vaciar() {
+    this.carritoSvc.vaciar();
+    this.refrescar();
   }
 }

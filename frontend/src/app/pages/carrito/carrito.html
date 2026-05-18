@@ -7,37 +7,37 @@
         <p>Revisa tus productos antes de continuar</p>
     </div>
 
-    <div class="carrito-lista">
+    <div *ngIf="items.length === 0" class="vacio-msg">
+        Tu carrito está vacío.
+        <a routerLink="/productos">Ver productos</a>
+    </div>
 
-        <div class="carrito-card" *ngFor="let item of carrito">
+    <div class="carrito-lista" *ngIf="items.length > 0">
+
+        <div class="carrito-card" *ngFor="let item of items; let i = index">
 
             <div class="producto-detalle">
-
                 <h3>{{ item.nombre }}</h3>
-
-                <p class="precio-producto">
-                    ${{ item.precio }}
-                </p>
-
+                <p class="precio-producto">${{ item.precio | number }}</p>
             </div>
+
+            <button class="btn-eliminar" (click)="eliminar(i)">Eliminar</button>
 
         </div>
 
     </div>
 
-    <div class="carrito-resumen">
+    <div class="carrito-resumen" *ngIf="items.length > 0">
 
         <div class="total-box">
             <span>Total</span>
-            <h2>${{ total }}</h2>
+            <h2>${{ total | number }}</h2>
         </div>
 
-        <a
-            routerLink="/pago"
-            class="btn-pagar"
-        >
-            Ir a pagar
-        </a>
+        <div class="acciones">
+            <button class="btn-vaciar" (click)="vaciar()">Vaciar carrito</button>
+            <a routerLink="/pago" class="btn-pagar">Ir a pagar</a>
+        </div>
 
     </div>
 

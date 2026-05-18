@@ -1,1 +1,68 @@
-<p>pago works!</p>
+<app-navbar></app-navbar>
+
+<div class="pago-container">
+
+    <div class="pago-header">
+        <h1>Finalizar Pago</h1>
+        <p>Confirma tu compra y elige método de pago</p>
+    </div>
+
+    <div class="pago-grid">
+
+        <div class="pago-resumen">
+            <h2>Resumen del pedido</h2>
+            <div class="item-pago" *ngFor="let item of items">
+                <span>{{ item.nombre }}</span>
+                <span>${{ item.precio | number }}</span>
+            </div>
+            <div class="total-pago">
+                <strong>Total</strong>
+                <strong>${{ total | number }}</strong>
+            </div>
+        </div>
+
+        <div class="pago-metodo">
+            <h2>Método de pago</h2>
+
+            <div class="metodos">
+                <label class="metodo-opcion">
+                    <input
+                        type="radio"
+                        name="metodo"
+                        value="credito"
+                        [(ngModel)]="metodoPago"
+                        [ngModelOptions]="{standalone: true}"
+                    />
+                    <span>Tarjeta de crédito</span>
+                </label>
+
+                <label class="metodo-opcion">
+                    <input
+                        type="radio"
+                        name="metodo"
+                        value="debito"
+                        [(ngModel)]="metodoPago"
+                        [ngModelOptions]="{standalone: true}"
+                    />
+                    <span>Tarjeta de débito</span>
+                </label>
+            </div>
+
+            <p class="info-mp">
+                Serás redirigido a Mercado Pago para completar el pago de forma segura.
+            </p>
+
+            <div *ngIf="error" class="error-msg">{{ error }}</div>
+
+            <button
+                class="btn-pagar-final"
+                (click)="pagar()"
+                [disabled]="cargando"
+            >
+                {{ cargando ? 'Procesando...' : 'Pagar con Mercado Pago' }}
+            </button>
+        </div>
+
+    </div>
+
+</div>

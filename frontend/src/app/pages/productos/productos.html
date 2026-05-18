@@ -7,24 +7,20 @@
         <p>Explora y agrega productos a tu carrito</p>
     </div>
 
-    <div class="productos-grid">
+    <div *ngIf="cargando" class="estado-msg">Cargando productos...</div>
+    <div *ngIf="error" class="estado-msg error">{{ error }}</div>
+
+    <div class="productos-grid" *ngIf="!cargando && !error">
 
         <div class="producto-card" *ngFor="let producto of productos">
 
             <div class="producto-info">
-
                 <h3>{{ producto.nombre }}</h3>
-
-                <p class="precio">
-                    ${{ producto.precio }}
-                </p>
-
+                <p class="descripcion" *ngIf="producto.descripcion">{{ producto.descripcion }}</p>
+                <p class="precio">${{ producto.precio | number }}</p>
             </div>
 
-            <button
-                class="btn-agregar"
-                (click)="agregarCarrito(producto)"
-            >
+            <button class="btn-agregar" (click)="agregarCarrito(producto)">
                 Agregar al Carrito
             </button>
 
