@@ -13,6 +13,12 @@ from routers.auth import router as auth_router
 from routers.productos import router as productos_router
 from routers.pagos import router as pagos_router
 
+
+
+
+
+
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

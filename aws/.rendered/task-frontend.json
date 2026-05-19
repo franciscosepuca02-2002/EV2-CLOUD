@@ -11,7 +11,7 @@
       "image": "848125594132.dkr.ecr.us-east-2.amazonaws.com/ev2-cloud-frontend:latest",
       "essential": true,
       "environment": [
-        { "name": "API_URL", "value": "http://3.145.134.228:8000" }
+        { "name": "API_URL", "value": "http://placeholder:8000" }
       ],
       "portMappings": [
         { "containerPort": 80, "protocol": "tcp" }
